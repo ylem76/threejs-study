@@ -10,7 +10,7 @@ import { Canvas, useFrame } from '@react-three/fiber';
 // Three.js의 OrbitControls 인스턴스를 만들고
 // useFrame()으로 매 프레임마다 카메라를 업데이트함
 // 마우스/터치 이벤트를 감지해서 카메라 조작을 트리거함
-import { OrbitControls } from '@react-three/drei';
+import { OrbitControls, useGLTF } from '@react-three/drei';
 import { useRef } from 'react';
 import * as THREE from 'three';
 
@@ -39,6 +39,12 @@ function RotatingBox() {
   );
 }
 
+function HouseModel() {
+  // glb 파일 로드
+  const { scene } = useGLTF('/models/house.glb');
+  return <primitive object={scene} />;
+}
+
 export default function App() {
   return (
     <Canvas
@@ -47,6 +53,9 @@ export default function App() {
       <ambientLight intensity={0.2} />
       <pointLight position={[10, 10, 10]} />
       <directionalLight position={[2, 3, 1]} intensity={1.5} />
+
+      {/* 집 모델 */}
+      <HouseModel />
 
       <RotatingBox />
       <OrbitControls />
