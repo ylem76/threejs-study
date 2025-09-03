@@ -2,7 +2,8 @@
 // Canvas : 내부적으로 Scene, Renderer, Camera 자동 설정
 // useFrame : 매 프레임마다 실행되는 함수 등록
 // requestAnimationFrame과 유사
-import { Canvas, useFrame } from '@react-three/fiber';
+import { Canvas, useFrame, useThree } from '@react-three/fiber';
+import { OrbitControls as OrbitControlsImpl } from 'three-stdlib';
 
 // three.js에서 제공하는 유틸리티 모음
 // OrbitControls : 마우스로 카메라 제어하는 조작 로직 컴포넌트
@@ -10,8 +11,8 @@ import { Canvas, useFrame } from '@react-three/fiber';
 // Three.js의 OrbitControls 인스턴스를 만들고
 // useFrame()으로 매 프레임마다 카메라를 업데이트함
 // 마우스/터치 이벤트를 감지해서 카메라 조작을 트리거함
-import { OrbitControls, useGLTF } from '@react-three/drei';
-import { useRef } from 'react';
+import { Bounds, OrbitControls, useGLTF } from '@react-three/drei';
+import { useEffect, useRef } from 'react';
 import * as THREE from 'three';
 
 function RotatingBox() {
@@ -42,21 +43,50 @@ function RotatingBox() {
 function HouseModel() {
   // glb 파일 로드
   const { scene } = useGLTF(`${import.meta.env.BASE_URL}/models/house.glb`);
-  return <primitive object={scene} />;
+
+  return <primitive object={scene} position={[0, -1.5, 0]} />;
+}
+
+function DebugCamera() {
+  const { camera, controls } = useThree() as {
+    camera: THREE.PerspectiveCamera;
+    controls: OrbitControlsImpl;
+  };
+
+  useEffect(() => {
+    const log = () => {
+      console.log('camera.position', camera.position.toArray());
+      console.log('controls.target', controls?.target.toArray());
+    };
+
+    window.addEventListener('keydown', (e) => {
+      if (e.key === 'p') {
+        // p키 누르면 콘솔에 찍기
+        log();
+      }
+    });
+
+    return () => window.removeEventListener('keydown', log);
+  }, [camera, controls]);
+
+  return null;
 }
 
 export default function App() {
   return (
     <Canvas
-      camera={{ position: [0, 0, 5] }}
+      camera={{
+        position: [4.5, 2, 5.5],
+        fov: 50,
+      }}
       style={{ height: '100vh', width: '100vw' }}>
       <ambientLight intensity={0.2} />
       <pointLight position={[10, 10, 10]} />
       <directionalLight position={[2, 3, 1]} intensity={1.5} />
-
       {/* 집 모델 */}
       <HouseModel />
       <OrbitControls />
+      <DebugCamera />
     </Canvas>
   );
 }
