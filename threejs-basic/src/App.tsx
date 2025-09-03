@@ -41,7 +41,7 @@ function RotatingBox() {
 
 function HouseModel() {
   // glb 파일 로드
-  const { scene } = useGLTF('/models/house.glb');
+  const { scene } = useGLTF(`${import.meta.env.BASE_URL}/models/house.glb`);
   return <primitive object={scene} />;
 }
 
@@ -56,8 +56,6 @@ export default function App() {
 
       {/* 집 모델 */}
       <HouseModel />
-
-      <RotatingBox />
       <OrbitControls />
     </Canvas>
   );
