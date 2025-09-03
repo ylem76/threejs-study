@@ -44,6 +44,14 @@ function HouseModel() {
   // glb 파일 로드
   const { scene } = useGLTF(`${import.meta.env.BASE_URL}/models/house.glb`);
 
+  useEffect(() => {
+    scene.traverse((child) => {
+      if ((child as THREE.Mesh).isMesh) {
+        child.castShadow = true;
+      }
+    });
+  }, [scene]);
+
   return <primitive object={scene} position={[0, -1.5, 0]} />;
 }
 
@@ -75,16 +83,25 @@ function DebugCamera() {
 export default function App() {
   return (
     <Canvas
+      shadows
       camera={{
         position: [4.5, 2, 5.5],
         fov: 50,
       }}
       style={{ height: '100vh', width: '100vw' }}>
       <ambientLight intensity={0.2} />
-      <pointLight position={[10, 10, 10]} />
-      <directionalLight position={[2, 3, 1]} intensity={1.5} />
+      <pointLight position={[10, 10, 10]} castShadow />
+      <directionalLight position={[2, 3, 1]} intensity={1.5} castShadow />
       {/* 집 모델 */}
       <HouseModel />
+      {/* 바닥메쉬 */}
+      <mesh
+        rotation={[-Math.PI / 2, 0, 0]}
+        position={[0, -1.5, 0]}
+        receiveShadow>
+        <planeGeometry args={[20, 20]} />
+        <meshStandardMaterial color='#8eaf8e' />
+      </mesh>
       <OrbitControls />
       <DebugCamera />
     </Canvas>
