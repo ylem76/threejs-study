@@ -15,6 +15,8 @@ import { Bounds, OrbitControls, useGLTF } from '@react-three/drei';
 import { useEffect, useRef } from 'react';
 import * as THREE from 'three';
 
+import { Sky } from '@react-three/drei';
+
 function RotatingBox() {
   // three.js의 mesh 인스턴스에 접근하기 위해 ref를 사용해서 참조
   //null! : 절대 null이 아니라고 ts에 명시
@@ -42,13 +44,20 @@ function RotatingBox() {
 
 function HouseModel() {
   // glb 파일 로드
-  const { scene } = useGLTF(`${import.meta.env.BASE_URL}/models/house.glb`);
+  const { scene, materials } = useGLTF(
+    `${import.meta.env.BASE_URL}/models/house.glb`
+  );
+  console.log('materials', materials);
+
+  useEffect(() => {
+    const win = materials.window as THREE.MeshStandardMaterial;
+    win.emissive = new THREE.Color('orange');
+    win.emissiveIntensity = 0.1;
+  }, [materials]);
 
   useEffect(() => {
     scene.traverse((child) => {
-      if ((child as THREE.Mesh).isMesh) {
-        child.castShadow = true;
-      }
+      child.castShadow = true;
     });
   }, [scene]);
 
@@ -89,9 +98,22 @@ export default function App() {
         fov: 50,
       }}
       style={{ height: '100vh', width: '100vw' }}>
+      <Sky
+        distance={450000} // 하늘 크기
+        sunPosition={[-100, 200, 50]} // 태양 위치
+        inclination={0} // 태양 고도
+        azimuth={0.25} // 태양 방향
+      />
       <ambientLight intensity={0.2} />
-      <pointLight position={[10, 10, 10]} castShadow />
-      <directionalLight position={[2, 3, 1]} intensity={1.5} castShadow />
+      {/* <pointLight position={[10, 10, 10]} castShadow /> */}
+      <pointLight
+        position={[0, 1, 0]} // 집 안쪽 위치
+        intensity={0.2}
+        distance={5} // 빛이 닿는 범위
+        decay={2} // 빛이 줄어드는 정도
+        color='orange'
+      />
+      <directionalLight position={[-100, 200, 50]} intensity={1} castShadow />
       {/* 집 모델 */}
       <HouseModel />
       {/* 바닥메쉬 */}
