@@ -16,6 +16,39 @@ import { useEffect, useRef } from 'react';
 import * as THREE from 'three';
 
 import { Sky } from '@react-three/drei';
+function IslandModel() {
+  // 등대섬
+  const { scene, materials } = useGLTF(
+    `${import.meta.env.BASE_URL}/models/island.glb`
+  );
+
+  useEffect(() => {
+    // scene의 모든 child에 castShadow 적용
+    // scene.traverse는 씬 그래프 전체를 순회
+    scene.traverse((child) => {
+      child.receiveShadow = true;
+    });
+  }, [scene]);
+
+  return <primitive object={scene} position={[0, -1.5, 0]} />;
+}
+
+function LightHouseModel() {
+  // 등대
+  const { scene, materials } = useGLTF(
+    `${import.meta.env.BASE_URL}/models/lighthouse.glb`
+  );
+
+  useEffect(() => {
+    // scene의 모든 child에 castShadow 적용
+    // scene.traverse는 씬 그래프 전체를 순회
+    scene.traverse((child) => {
+      child.castShadow = true;
+    });
+  }, [scene]);
+
+  return <primitive object={scene} position={[0, -1.5, 0]} />;
+}
 
 function RotatingBox() {
   // three.js의 mesh 인스턴스에 접근하기 위해 ref를 사용해서 참조
@@ -107,8 +140,8 @@ export default function App() {
     <Canvas
       shadows
       camera={{
-        position: [4.5, 2, 5.5],
-        fov: 50,
+        position: [9.09303770634943, 4.042934350814923, 7.72793458620167],
+        fov: 75,
       }}
       style={{ height: '100vh', width: '100vw' }}>
       <Sky
@@ -118,7 +151,6 @@ export default function App() {
         azimuth={0.25} // 태양 방향
       />
       <ambientLight intensity={0.1} />
-
       <pointLight
         position={[0, 0.5, 0]} // 집 안쪽 위치
         intensity={1}
@@ -128,15 +160,17 @@ export default function App() {
         castShadow
       />
       <directionalLight position={[-100, 200, 50]} intensity={1} castShadow />
-      {/* 집 모델 */}
-      <HouseModel />
+      {/* 섬 모델 */}
+      <IslandModel />
+      {/* 등대모델 */}
+      <LightHouseModel />
       {/* 바닥메쉬 */}
       <mesh
         rotation={[-Math.PI / 2, 0, 0]}
         position={[0, -1.5, 0]}
         receiveShadow>
-        <planeGeometry args={[20, 20]} />
-        <meshStandardMaterial color='#8eaf8e' />
+        <planeGeometry args={[200, 200]} />
+        <meshStandardMaterial color='#4c4c78' />
       </mesh>
       <OrbitControls />
       <DebugCamera />
