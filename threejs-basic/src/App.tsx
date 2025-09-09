@@ -54,9 +54,16 @@ function HouseModel() {
 
   useEffect(() => {
     // materials 중 창문(window) material을 가져와 발광 설정
-    const win = materials.window as THREE.MeshStandardMaterial;
+    const win = materials.window as THREE.MeshPhysicalMaterial;
     win.emissive = new THREE.Color('orange');
     win.emissiveIntensity = 0.1;
+    win.color = new THREE.Color('white');
+    win.transparent = true;
+    win.transmission = 1; // 1 = 완전한 투명 유리
+    win.thickness = 0.1; // 유리 두께
+    win.roughness = 0; // 표면 거칠기
+    win.metalness = 0; // 금속성
+    win.ior = 1.5; // 굴절률 (유리=1.5 정도)
   }, [materials]);
 
   useEffect(() => {
@@ -110,14 +117,15 @@ export default function App() {
         inclination={0} // 태양 고도
         azimuth={0.25} // 태양 방향
       />
-      <ambientLight intensity={0.2} />
-      {/* <pointLight position={[10, 10, 10]} castShadow /> */}
+      <ambientLight intensity={0.1} />
+
       <pointLight
-        position={[0, 1, 0]} // 집 안쪽 위치
-        intensity={0.2}
-        distance={5} // 빛이 닿는 범위
-        decay={2} // 빛이 줄어드는 정도(감쇠율)
+        position={[0, 0.5, 0]} // 집 안쪽 위치
+        intensity={1}
+        distance={10} // 빛이 닿는 범위
+        decay={1} // 빛이 줄어드는 정도(감쇠율)
         color='orange'
+        castShadow
       />
       <directionalLight position={[-100, 200, 50]} intensity={1} castShadow />
       {/* 집 모델 */}
