@@ -44,18 +44,24 @@ function RotatingBox() {
 
 function HouseModel() {
   // glb 파일 로드
+  // scene : 3d모델 전체
+  // materials : 모델 안에서 사용된 머티리얼 모음
+
   const { scene, materials } = useGLTF(
     `${import.meta.env.BASE_URL}/models/house.glb`
   );
   console.log('materials', materials);
 
   useEffect(() => {
+    // materials 중 창문(window) material을 가져와 발광 설정
     const win = materials.window as THREE.MeshStandardMaterial;
     win.emissive = new THREE.Color('orange');
     win.emissiveIntensity = 0.1;
   }, [materials]);
 
   useEffect(() => {
+    // scene의 모든 child에 castShadow 적용
+    // scene.traverse는 씬 그래프 전체를 순회
     scene.traverse((child) => {
       child.castShadow = true;
     });
@@ -110,7 +116,7 @@ export default function App() {
         position={[0, 1, 0]} // 집 안쪽 위치
         intensity={0.2}
         distance={5} // 빛이 닿는 범위
-        decay={2} // 빛이 줄어드는 정도
+        decay={2} // 빛이 줄어드는 정도(감쇠율)
         color='orange'
       />
       <directionalLight position={[-100, 200, 50]} intensity={1} castShadow />
