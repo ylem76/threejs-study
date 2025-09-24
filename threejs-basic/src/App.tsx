@@ -18,6 +18,19 @@ import * as THREE from 'three';
 import { Sky } from '@react-three/drei';
 import { Stars } from '@react-three/drei';
 
+const MoonModel = () => {
+  return (
+    <mesh position={[-100, 100, -1000]}>
+      <sphereGeometry args={[25, 32, 32]} /> {/* 반지름 크게 */}
+      <meshStandardMaterial
+        color='#fdfbd3'
+        emissive='#fdfbd3'
+        emissiveIntensity={1.5}
+      />
+    </mesh>
+  );
+};
+
 function IslandModel() {
   // 등대섬
   const { scene, materials } = useGLTF(
@@ -161,6 +174,9 @@ export default function App() {
         fade
       />
       <ambientLight intensity={0.1} />
+
+      {/* 달 모델 */}
+      <MoonModel />
 
       {/* 섬 모델 */}
       <IslandModel />
