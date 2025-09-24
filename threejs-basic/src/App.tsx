@@ -12,11 +12,17 @@ import { OrbitControls as OrbitControlsImpl } from 'three-stdlib';
 // useFrame()으로 매 프레임마다 카메라를 업데이트함
 // 마우스/터치 이벤트를 감지해서 카메라 조작을 트리거함
 import { Bounds, OrbitControls, useGLTF } from '@react-three/drei';
-import { useEffect, useRef } from 'react';
+import { Suspense, useEffect, useRef } from 'react';
 import * as THREE from 'three';
 
 import { Sky } from '@react-three/drei';
 import { Stars } from '@react-three/drei';
+// import { Water } from 'three-stdlib';
+import { extend } from '@react-three/fiber';
+import { Water } from 'three/examples/jsm/objects/Water2.js';
+import { Ocean } from './components/Ocean';
+
+extend({ Water });
 
 const MoonModel = () => {
   return (
@@ -159,12 +165,14 @@ export default function App() {
         fov: 50,
       }}
       style={{ height: '100vh', width: '100vw' }}>
-      <Sky
-        distance={450000}
+      {/* <Sky
+        distance={60000}
         sunPosition={[0, -1, 0]} // 태양을 아래로 (밤 효과)
         inclination={0}
-        azimuth={0.25}
-      />
+        azimuth={0.2}
+      /> */}
+
+      <color attach='background' args={['#100c4f']} />
       <Stars
         radius={100} // 별이 퍼질 반경
         depth={50} // 별깊이
@@ -183,7 +191,7 @@ export default function App() {
       />
 
       {/* 안개 */}
-      <fog attach='fog' args={['#999', 10, 200]} />
+      {/* <fog attach='fog' args={['#999', 10, 200]} /> */}
 
       {/* <fogExp2 attach='fog' args={['#fff', 0.01]} /> */}
 
@@ -194,14 +202,11 @@ export default function App() {
       <IslandModel />
       {/* 등대모델 */}
       <LightHouseModel />
-      {/* 바닥메쉬 */}
-      <mesh
-        rotation={[-Math.PI / 2, 0, 0]}
-        position={[0, -1.5, 0]}
-        receiveShadow>
-        <planeGeometry args={[200, 200]} />
-        <meshStandardMaterial color='#4c4c78' />
-      </mesh>
+      {/* 물 */}
+      <Suspense fallback={null}>
+        <Ocean />
+      </Suspense>
+
       <OrbitControls target={[0, 5, 0]} />
       <DebugCamera />
     </Canvas>
