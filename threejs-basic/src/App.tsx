@@ -175,6 +175,18 @@ export default function App() {
       />
       <ambientLight intensity={0.1} />
 
+      {/* 달빛 표현 */}
+      <directionalLight
+        position={[30, 40, -50]} // 달이 있는 쪽에서 비추도록
+        intensity={0.3} // 밝기 (낮보다 훨씬 낮게)
+        color='#b0c4de' // 약간 푸른빛 (달빛 느낌)
+      />
+
+      {/* 안개 */}
+      <fog attach='fog' args={['#999', 10, 200]} />
+
+      {/* <fogExp2 attach='fog' args={['#fff', 0.01]} /> */}
+
       {/* 달 모델 */}
       <MoonModel />
 
