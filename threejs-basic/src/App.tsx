@@ -140,8 +140,8 @@ export default function App() {
     <Canvas
       shadows
       camera={{
-        position: [9.09303770634943, 4.042934350814923, 7.72793458620167],
-        fov: 75,
+        position: [10.930983937456272, 8.773521034162675, 17.631544584569394],
+        fov: 50,
       }}
       style={{ height: '100vh', width: '100vw' }}>
       <Sky
@@ -172,7 +172,7 @@ export default function App() {
         <planeGeometry args={[200, 200]} />
         <meshStandardMaterial color='#4c4c78' />
       </mesh>
-      <OrbitControls />
+      <OrbitControls target={[0, 5, 0]} />
       <DebugCamera />
     </Canvas>
   );
