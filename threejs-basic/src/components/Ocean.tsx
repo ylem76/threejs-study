@@ -1,22 +1,25 @@
-import { Canvas, useFrame, useLoader, useThree } from '@react-three/fiber';
-
-import { useEffect, useMemo, useRef } from 'react';
 import * as THREE from 'three';
-
-import { extend } from '@react-three/fiber';
+import React, { Suspense, useRef, useMemo } from 'react';
+import {
+  Canvas,
+  extend,
+  useThree,
+  useLoader,
+  useFrame,
+} from '@react-three/fiber';
+import { OrbitControls, Sky } from '@react-three/drei';
 import { Water } from 'three-stdlib';
 
 extend({ Water });
 
-export const Ocean = () => {
+export function Ocean() {
+  const ref = useRef<any>(null);
+  const gl = useThree((state) => state.gl);
   const waterNormals = useLoader(
     THREE.TextureLoader,
     `${import.meta.env.BASE_URL}/textures/waternormals.jpg`
   );
   waterNormals.wrapS = waterNormals.wrapT = THREE.RepeatWrapping;
-
-  const waterRef = useRef<THREE.Mesh>(null!);
-
   const geom = useMemo(() => new THREE.PlaneGeometry(10000, 10000), []);
   const config = useMemo(
     () => ({
@@ -24,44 +27,16 @@ export const Ocean = () => {
       textureHeight: 512,
       waterNormals,
       sunDirection: new THREE.Vector3(),
-      sunColor: 0xaaaaee, // 흐린 달빛
-      waterColor: 0x000814, // 진한 밤바다 색
-      distortionScale: 2.0, // 물결 왜곡 적당히
-      fog: true,
+      sunColor: 0xffffff,
+      waterColor: 0x001e0f,
+      distortionScale: 3.7,
+      fog: false,
+      // format: gl.encoding
     }),
     [waterNormals]
   );
-
-  useEffect(() => {
-    if (waterRef.current) {
-      const mat = waterRef.current.material as THREE.ShaderMaterial;
-      if (mat.uniforms && mat.uniforms['sunDirection']) {
-        mat.uniforms['sunDirection'].value.set(1, 1, 1);
-      }
-    }
-  }, []);
-
-  useEffect(() => {
-    if (waterRef.current) {
-      const mat = waterRef.current.material as THREE.ShaderMaterial;
-      if (mat.uniforms?.time) {
-        mat.uniforms.time.value = 0; // 초기화
-      }
-    }
-  }, []);
-
-  useFrame((_, delta) => {
-    const mat = waterRef.current?.material as THREE.ShaderMaterial | undefined;
-    mat?.uniforms?.['time']?.value !== undefined &&
-      (mat.uniforms['time'].value += delta * 0.2);
-  });
-
-  return (
-    <water
-      ref={waterRef}
-      args={[geom, config]}
-      rotation-x={-Math.PI / 2}
-      position={[0, 0, 0]}
-    />
+  useFrame(
+    (state, delta) => (ref.current.material.uniforms.time.value += delta)
   );
-};
+  return <water ref={ref} args={[geom, config]} rotation-x={-Math.PI / 2} />;
+}
