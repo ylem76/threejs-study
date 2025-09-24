@@ -16,6 +16,8 @@ import { useEffect, useRef } from 'react';
 import * as THREE from 'three';
 
 import { Sky } from '@react-three/drei';
+import { Stars } from '@react-three/drei';
+
 function IslandModel() {
   // 등대섬
   const { scene, materials } = useGLTF(
@@ -145,21 +147,21 @@ export default function App() {
       }}
       style={{ height: '100vh', width: '100vw' }}>
       <Sky
-        distance={450000} // 하늘 크기
-        sunPosition={[-100, 200, 50]} // 태양 위치
-        inclination={0} // 태양 고도
-        azimuth={0.25} // 태양 방향
+        distance={450000}
+        sunPosition={[0, -1, 0]} // 태양을 아래로 (밤 효과)
+        inclination={0}
+        azimuth={0.25}
+      />
+      <Stars
+        radius={100} // 별이 퍼질 반경
+        depth={50} // 별깊이
+        count={5000} // 별 개수
+        factor={4} // 크기
+        saturation={0}
+        fade
       />
       <ambientLight intensity={0.1} />
-      <pointLight
-        position={[0, 0.5, 0]} // 집 안쪽 위치
-        intensity={1}
-        distance={10} // 빛이 닿는 범위
-        decay={1} // 빛이 줄어드는 정도(감쇠율)
-        color='orange'
-        castShadow
-      />
-      <directionalLight position={[-100, 200, 50]} intensity={1} castShadow />
+
       {/* 섬 모델 */}
       <IslandModel />
       {/* 등대모델 */}
