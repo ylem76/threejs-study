@@ -7,6 +7,7 @@ import {
   useLoader,
   useFrame,
 } from '@react-three/fiber';
+import { OrbitControls as OrbitControlsImpl } from 'three-stdlib';
 
 import { OrbitControls, Sky, Stars, useGLTF } from '@react-three/drei';
 import { Water } from 'three-stdlib';
