@@ -30,13 +30,13 @@ export function Ocean() {
       sunColor: 0xffffff,
       waterColor: 0x001e0f,
       distortionScale: 3.7,
-      fog: false,
+      fog: true,
       // format: gl.encoding
     }),
     [waterNormals]
   );
   useFrame(
-    (state, delta) => (ref.current.material.uniforms.time.value += delta)
+    (state, delta) => (ref.current.material.uniforms.time.value += delta * 0.1)
   );
   return <water ref={ref} args={[geom, config]} rotation-x={-Math.PI / 2} />;
 }
