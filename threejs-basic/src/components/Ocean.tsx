@@ -27,8 +27,8 @@ export function Ocean() {
       textureHeight: 512,
       waterNormals,
       sunDirection: new THREE.Vector3(),
-      sunColor: 0xffffff,
-      waterColor: 0x001e0f,
+      sunColor: 0xaaaaaa,
+      waterColor: 0x001020,
       distortionScale: 3.7,
       fog: true,
       // format: gl.encoding
@@ -38,5 +38,12 @@ export function Ocean() {
   useFrame(
     (state, delta) => (ref.current.material.uniforms.time.value += delta * 0.1)
   );
-  return <water ref={ref} args={[geom, config]} rotation-x={-Math.PI / 2} />;
+  return (
+    <water
+      ref={ref}
+      args={[geom, config]}
+      rotation-x={-Math.PI / 2}
+      receiveShadow
+    />
+  );
 }

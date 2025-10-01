@@ -9,9 +9,16 @@ import {
 } from '@react-three/fiber';
 import { OrbitControls as OrbitControlsImpl } from 'three-stdlib';
 
-import { OrbitControls, Sky, Stars, useGLTF } from '@react-three/drei';
+import {
+  OrbitControls,
+  Sky,
+  SpotLight,
+  Stars,
+  useGLTF,
+} from '@react-three/drei';
 
 import { Ocean } from './components/Ocean';
+import { LighthouseLight } from './components/LightHouseLight';
 
 const MoonModel = () => {
   return (
@@ -120,6 +127,7 @@ function DebugCamera() {
 }
 
 export default function App() {
+  const light = useRef(null);
   return (
     <Canvas
       camera={{
@@ -128,7 +136,7 @@ export default function App() {
         near: 1,
         far: 20000,
       }}>
-      <color attach='background' args={['#100c4f']} />
+      <color attach='background' args={['#2b2a3e']} />
       <Stars
         radius={100} // 별이 퍼질 반경
         depth={50} // 별깊이
@@ -143,10 +151,9 @@ export default function App() {
       <directionalLight
         position={[30, 40, -50]} // 달이 있는 쪽에서 비추도록
         intensity={0.3} // 밝기 (낮보다 훨씬 낮게)
-        color='#b0c4de' // 약간 푸른빛 (달빛 느낌)
+        color='#53647cff' // 약간 푸른빛 (달빛 느낌)
       />
-      <pointLight decay={0} position={[100, 100, 100]} />
-      <pointLight decay={0.5} position={[-100, -100, -100]} />
+      <LighthouseLight />
       <Suspense fallback={null}>
         {/* 달 모델 */}
         <MoonModel />
